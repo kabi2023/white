@@ -1,0 +1,39 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+
+const app = express();
+const PORT = 5000;
+
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect('mongodb://127.0.0.1:27017/legal_ai', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.error(err));
+
+const QuerySchema = new mongoose.Schema({
+  query: String,
+  response: String,
+  createdAt: { type: Date, default: Date.now }
+});
+const Query = mongoose.model('Query', QuerySchema);
+
+
+app.post('/api/search', async (req, res) => {
+  const { query } = req.body;
+
+
+  const response = `This is a legal advice result from server for: "${query}"`;
+
+
+  const newQuery = new Query({ query, response });
+  await newQuery.save();
+
+  res.json({ response });
+});
+
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
