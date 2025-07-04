@@ -1,0 +1,19 @@
+const handleSearch = async () => {
+  if (searchQuery.trim()) {
+    setSubmittedQuery(searchQuery);
+    setSearchSubmitted(true);
+
+    try {
+      const res = await axios.post('http://localhost:5000/api/search', {
+        query: searchQuery
+      });
+
+      setResult(res.data.response);
+    } catch (error) {
+      console.error('Error fetching response:', error);
+      setResult('Something went wrong. Please try again.');
+    }
+
+    setSearchQuery('');
+  }
+};
